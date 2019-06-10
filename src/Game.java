@@ -9,7 +9,7 @@ public class Game {
         if (boardSize != 3)
             throw new Exception("Unsupported board size!");
         this.boardSize = boardSize;
-        if (player != 1 && player != 2)
+        if (player != 1 && player != -1)
             throw new Exception("Player is not valid.");
         this.player = player;
 
@@ -29,18 +29,25 @@ public class Game {
         return output;
     }
 
-    int simulate(int[][] board) throws Exception {
+    int simulate(int[][] board, int player) throws Exception {
         printBoard(board);
         int winner = getWinner(board);
         if (winner != 0) {
             return winner;
         }
-        int[][] newBoard = cloneArray(board);
-        int player = fillBoard(newBoard);
-        if (player == 0)
-            return 0;
-        this.player = player;
-        return simulate(newBoard);
+        int score = 0;
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board[i][j] == 0) {
+                    int[][] newBoard = cloneArray(board);
+                    newBoard[i][j] = player;
+                    score += simulateDepth(newBoard, player == 1 ? -1 : 1);
+
+                }
+            }
+        }
+        return score;
+
     }
 
     int simulateDepth(int[][] board, int player) throws Exception {
@@ -77,7 +84,7 @@ public class Game {
             for (int j = 0; j < boardSize; j++) {
                 if (board[i][j] == 0) {
                     board[i][j] = player;
-                    return player == 1 ? 2 : 1;
+                    return player == 1 ? -1 : 1;
                 }
             }
         }
@@ -113,11 +120,28 @@ public class Game {
         }
     }
 
+//    int play(int[][] board) {
+//        int[] point;
+//        if (player == -1)
+//            point = takeInputFromUser();
+//        else
+//            point = takeInputFromComputer();
+//        board[point[0]][point[1]] = player;
+//    }
+
+    private int[] takeInputFromComputer() {
+        return new int[0];
+    }
+
     public static void main(String[] args) throws Exception {
         final int size = 3;
         final int[][] board = new int[size][size];
+        final int player = 1;
+        //1 : AI, -1 : Human
+        Game game = new Game(size, player);
+        int winner = game.simulate(board,1);
+        System.out.println("winner is " + (winner == 1 ? "AI" : "Human"));
 
-        Game game = new Game(size);
-        game.play(board);
     }
+
 }
