@@ -43,6 +43,21 @@ public class Game {
         return simulate(newBoard);
     }
 
+    int simulateDepth(int[][] board, int player) throws Exception {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board[i][j] == 0) {
+                    int[][] newBoard = cloneArray(board);
+                    newBoard[i][j] = player;
+                    player = player == 1 ? -1 : 1;
+                    return simulateDepth(newBoard, player);
+
+                }
+            }
+        }
+        return 0;
+    }
+
     private void printBoard(int[][] board) throws Exception {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
