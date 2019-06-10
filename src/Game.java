@@ -36,6 +36,20 @@ public class Game {
         return 0;
     }
 
+    private void printBoard(int[][] board) throws Exception {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                try {
+                    System.out.print(board[i][j]);
+                } catch (Exception ex) {
+                    throw new Exception("index is not valid.");
+                }
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
     private int getWinner(int[][] board) throws Exception {
         try {
             if (board[0][0] != 0 && board[0][0] == board[1][1] && board[2][2] == board[1][1])
