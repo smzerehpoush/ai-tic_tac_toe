@@ -26,7 +26,8 @@ public class Game {
         return output;
     }
 
-    int play(int[][] board) throws Exception {
+    int simulate(int[][] board) throws Exception {
+        printBoard(board);
         int winner = getWinner(board);
         if (winner != 0) {
             return winner;
