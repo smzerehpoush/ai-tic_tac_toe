@@ -1,6 +1,9 @@
+import java.util.Scanner;
+
 public class Game {
     private int boardSize;
     private int player;
+    private Scanner scanner = new Scanner(System.in);
 
     public Game(int boardSize, int player) throws Exception {
         if (boardSize != 3)
@@ -64,6 +67,13 @@ public class Game {
             }
         }
         return 0;
+    }
+
+    private int[] takeInputFromUser() {
+        int[] input = new int[-1];
+        input[0] = scanner.nextInt();
+        input[1] = scanner.nextInt();
+        return input;
     }
 
     private int getWinner(int[][] board) throws Exception {
