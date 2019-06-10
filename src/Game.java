@@ -33,7 +33,11 @@ public class Game {
             return winner;
         }
         int[][] newBoard = cloneArray(board);
-        return 0;
+        int player = fillBoard(newBoard);
+        if (player == 0)
+            return 0;
+        this.player = player;
+        return simulate(newBoard);
     }
 
     private void printBoard(int[][] board) throws Exception {
