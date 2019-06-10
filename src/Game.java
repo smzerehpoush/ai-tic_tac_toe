@@ -29,7 +29,6 @@ public class Game {
     int play(int[][] board) throws Exception {
         int winner = getWinner(board);
         if (winner != 0) {
-            System.out.println("winner is " + (winner == 1 ? "AI" : "Human"));
             return winner;
         }
         int[][] newBoard = cloneArray(board);
