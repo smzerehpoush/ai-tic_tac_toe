@@ -2,10 +2,13 @@ public class Game {
     private int boardSize;
     private int player;
 
-    public Game(int boardSize) throws Exception {
+    public Game(int boardSize, int player) throws Exception {
         if (boardSize != 3)
             throw new Exception("Unsupported board size!");
         this.boardSize = boardSize;
+        if (player != 1 && player != 2)
+            throw new Exception("Player is not valid.");
+        this.player = player;
 
     }
 
