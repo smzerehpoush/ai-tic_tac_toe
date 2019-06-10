@@ -50,6 +50,18 @@ public class Game {
         System.out.println();
     }
 
+    private int fillBoard(int[][] board) {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board[i][j] == 0) {
+                    board[i][j] = player;
+                    return player == 1 ? 2 : 1;
+                }
+            }
+        }
+        return 0;
+    }
+
     private int getWinner(int[][] board) throws Exception {
         try {
             if (board[0][0] != 0 && board[0][0] == board[1][1] && board[2][2] == board[1][1])
