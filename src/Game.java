@@ -1,5 +1,6 @@
 public class Game {
     private int boardSize;
+    private int player;
 
     public Game(int boardSize) throws Exception {
         if (boardSize != 3)
