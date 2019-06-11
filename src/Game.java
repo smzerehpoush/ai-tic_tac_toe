@@ -29,19 +29,20 @@ public class Game {
         return output;
     }
 
-    int simulate(int[][] board, int player) throws Exception {
+    int simulate(int[][] board, int player, int score) throws Exception {
+        System.out.println("score : "+score);
         printBoard(board);
         int winner = getWinner(board);
         if (winner != 0) {
+            System.out.println("winner : " + (player == 1 ? 'o' : player == -1 ? 'x' : '-'));
             return winner;
         }
-        int score = 0;
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 if (board[i][j] == 0) {
                     int[][] newBoard = cloneArray(board);
                     newBoard[i][j] = player;
-                    score += simulateDepth(newBoard, player == 1 ? -1 : 1);
+                    score += simulate(newBoard, player == 1 ? -1 : 1, score);
 
                 }
             }
@@ -50,26 +51,30 @@ public class Game {
 
     }
 
-    int simulateDepth(int[][] board, int player) throws Exception {
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                if (board[i][j] == 0) {
-                    int[][] newBoard = cloneArray(board);
-                    newBoard[i][j] = player;
-                    player = player == 1 ? -1 : 1;
-                    return simulateDepth(newBoard, player);
-
-                }
-            }
-        }
-        return 0;
-    }
+//    int simulateDepth(int[][] board, int player) throws Exception {
+//        int winner = getWinner(board);
+//        if (winner != 0) {
+//            return winner;
+//        }
+//        printBoard(board);
+//        for (int i = 0; i < boardSize; i++) {
+//            for (int j = 0; j < boardSize; j++) {
+//                if (board[i][j] == 0) {
+//                    int[][] newBoard = cloneArray(board);
+//                    newBoard[i][j] = player;
+//                    return simulate(newBoard, player == 1 ? -1 : 1);
+//
+//                }
+//            }
+//        }
+//        return 0;
+//    }
 
     private void printBoard(int[][] board) throws Exception {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 try {
-                    System.out.print(board[i][j]);
+                    System.out.print(board[i][j] == 1 ? 'x' : board[i][j] == -1 ? 'o' : '-');
                 } catch (Exception ex) {
                     throw new Exception("index is not valid.");
                 }
@@ -137,10 +142,14 @@ public class Game {
         final int size = 3;
         final int[][] board = new int[size][size];
         final int player = 1;
-        //1 : AI, -1 : Human
+        //AI : 1, Human : -1
+        int[][] board2 = new int[][]{
+                {1, -1, 1},
+                {-1, -1, 1},
+                {0, 0, 0}};
         Game game = new Game(size, player);
-        int winner = game.simulate(board,1);
-        System.out.println("winner is " + (winner == 1 ? "AI" : "Human"));
+        int winner = game.simulate(board2, 1,0);
+        System.out.println("winner is " + (winner == 1 ? "AI" :winner == -1 ? "Human": "NO-ONE"));
 
     }
 
