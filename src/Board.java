@@ -4,9 +4,6 @@ import java.util.Set;
 public class Board {
 
     static final int SIZE = 3;
-
-    public enum State {Blank, X, O}
-
     private State[][] board;
     private State whichPlayer;
     private State winner;
@@ -158,5 +155,7 @@ public class Board {
 
         return new String(sb);
     }
+
+    public enum State {Blank, X, O}
 
 }

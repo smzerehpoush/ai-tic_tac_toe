@@ -15,6 +15,21 @@ public class Game {
 
     }
 
+    public static void main(String[] args) throws Exception {
+        final int size = 3;
+        final int[][] board = new int[size][size];
+        final int player = 1;
+        //AI : 1, Human : -1
+        int[][] board2 = new int[][]{
+                {1, -1, 1},
+                {-1, -1, 1},
+                {0, 0, 0}};
+        Game game = new Game(size, player);
+        int winner = game.simulate(board2, 1, 0);
+        System.out.println("winner is " + (winner == 1 ? "AI" : winner == -1 ? "Human" : "NO-ONE"));
+
+    }
+
     private int[][] cloneArray(int[][] input) throws Exception {
         int[][] output = new int[boardSize][boardSize];
         for (int i = 0; i < boardSize; i++) {
@@ -27,28 +42,6 @@ public class Game {
             }
         }
         return output;
-    }
-
-    int simulate(int[][] board, int player, int score) throws Exception {
-        System.out.println("score : "+score);
-        printBoard(board);
-        int winner = getWinner(board);
-        if (winner != 0) {
-            System.out.println("winner : " + (player == 1 ? 'o' : player == -1 ? 'x' : '-'));
-            return winner;
-        }
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                if (board[i][j] == 0) {
-                    int[][] newBoard = cloneArray(board);
-                    newBoard[i][j] = player;
-                    score += simulate(newBoard, player == 1 ? -1 : 1, score);
-
-                }
-            }
-        }
-        return score;
-
     }
 
 //    int simulateDepth(int[][] board, int player) throws Exception {
@@ -69,6 +62,28 @@ public class Game {
 //        }
 //        return 0;
 //    }
+
+    int simulate(int[][] board, int player, int score) throws Exception {
+        System.out.println("score : " + score);
+        printBoard(board);
+        int winner = getWinner(board);
+        if (winner != 0) {
+            System.out.println("winner : " + (player == 1 ? 'o' : player == -1 ? 'x' : '-'));
+            return winner;
+        }
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (board[i][j] == 0) {
+                    int[][] newBoard = cloneArray(board);
+                    newBoard[i][j] = player;
+                    score += simulate(newBoard, player == 1 ? -1 : 1, score);
+
+                }
+            }
+        }
+        return score;
+
+    }
 
     private void printBoard(int[][] board) throws Exception {
         for (int i = 0; i < boardSize; i++) {
@@ -103,6 +118,15 @@ public class Game {
         return input;
     }
 
+//    int play(int[][] board) {
+//        int[] point;
+//        if (player == -1)
+//            point = takeInputFromUser();
+//        else
+//            point = takeInputFromComputer();
+//        board[point[0]][point[1]] = player;
+//    }
+
     private int getWinner(int[][] board) throws Exception {
         try {
             if (board[0][0] != 0 && board[0][0] == board[1][1] && board[2][2] == board[1][1])
@@ -125,32 +149,8 @@ public class Game {
         }
     }
 
-//    int play(int[][] board) {
-//        int[] point;
-//        if (player == -1)
-//            point = takeInputFromUser();
-//        else
-//            point = takeInputFromComputer();
-//        board[point[0]][point[1]] = player;
-//    }
-
     private int[] takeInputFromComputer() {
         return new int[0];
-    }
-
-    public static void main(String[] args) throws Exception {
-        final int size = 3;
-        final int[][] board = new int[size][size];
-        final int player = 1;
-        //AI : 1, Human : -1
-        int[][] board2 = new int[][]{
-                {1, -1, 1},
-                {-1, -1, 1},
-                {0, 0, 0}};
-        Game game = new Game(size, player);
-        int winner = game.simulate(board2, 1,0);
-        System.out.println("winner is " + (winner == 1 ? "AI" :winner == -1 ? "Human": "NO-ONE"));
-
     }
 
 }

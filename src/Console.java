@@ -9,6 +9,11 @@ public class Console {
         board = new Board();
     }
 
+    public static void main(String[] args) {
+        Console ticTacToe = new Console();
+        ticTacToe.play();
+    }
+
     private void play() {
 
         System.out.println("Starting a new game.");
@@ -29,7 +34,7 @@ public class Console {
             int[] point = takeInputFromUser();
             board.setState(point[0], point[1], Board.State.X);
         } else {
-            Algorithms.miniMax(board,10);
+            Algorithms.miniMax(board, 10);
         }
     }
 
@@ -81,11 +86,6 @@ public class Console {
         } else {
             System.out.println("Player " + winner.name() + " wins!");
         }
-    }
-
-    public static void main(String[] args) {
-        Console ticTacToe = new Console();
-        ticTacToe.play();
     }
 
 }
