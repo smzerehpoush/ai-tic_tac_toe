@@ -7,7 +7,7 @@ public class Tic {
      * @param board     the Tic Tac Toe board to play on
      */
     public static void miniMax (Board board) {
-        MiniMax.run(board.getTurn(), board, Double.POSITIVE_INFINITY);
+        MiniMax.run(board.getPlayer(), board, Double.POSITIVE_INFINITY);
     }
 
     /**
@@ -16,7 +16,7 @@ public class Tic {
      * @param ply       the maximum depth
      */
     public static void miniMax (Board board, int ply) {
-        MiniMax.run(board.getTurn(), board, ply);
+        MiniMax.run(board.getPlayer(), board, ply);
     }
 
     public static void main(String[] args) {

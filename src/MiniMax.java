@@ -37,7 +37,7 @@ class MiniMax {
             return score(player, board);
         }
 
-        if (board.getTurn() == player) {
+        if (board.getPlayer() == player) {
             return getMax(player, board, currentPly);
         } else {
             return getMin(player, board, currentPly);
@@ -58,7 +58,7 @@ class MiniMax {
 
         for (Integer theMove : board.getAvailableMoves()) {
 
-            Board modifiedBoard = board.getDeepCopy();
+            Board modifiedBoard = board.deepClone();
             modifiedBoard.move(theMove);
 
             int score = miniMax(player, modifiedBoard, currentPly);
@@ -87,7 +87,7 @@ class MiniMax {
 
         for (Integer theMove : board.getAvailableMoves()) {
 
-            Board modifiedBoard = board.getDeepCopy();
+            Board modifiedBoard = board.deepClone();
             modifiedBoard.move(theMove);
 
             int score = miniMax(player, modifiedBoard, currentPly);

@@ -1,124 +1,85 @@
 import java.util.Scanner;
 
-/**
- * For playing Tic Tac Toe in the console.
- */
 public class Console {
 
     private Board board;
-    private Scanner sc = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Construct Console.
-     */
     private Console() {
         board = new Board();
     }
 
-    /**
-     * Begin the game.
-     */
     private void play() {
 
         System.out.println("Starting a new game.");
-
         while (true) {
             printGameStatus();
-            playMove();
+            playGame();
 
             if (board.isGameOver()) {
                 printWinner();
-
-                if (!tryAgain()) {
-                    break;
-                }
+                break;
             }
         }
+
     }
 
-    /**
-     * Handle the move to be played, either by the player or the AI.
-     */
-    private void playMove() {
-        if (board.getTurn() == Board.State.X) {
-            getPlayerMove();
+    private void playGame() {
+        if (board.getPlayer() == Board.State.X) {
+            int[] point = takeInputFromUser();
+            board.setState(point[0], point[1], Board.State.X);
         } else {
-            Algorithms.miniMax(board);
+            Algorithms.miniMax(board,10);
         }
     }
 
-    /**
-     * Print out the board and the player who's turn it is.
-     */
     private void printGameStatus() {
         System.out.println("\n" + board + "\n");
-        System.out.println(board.getTurn().name() + "'s turn.");
+        System.out.println(board.getPlayer().name() + "'s turn.");
     }
 
-    /**
-     * For reading in and interpreting the move that the user types into the console.
-     */
-    private void getPlayerMove() {
-        System.out.print("Index of move: ");
+    private int[] takeInputFromUser() {
 
-        int move = sc.nextInt();
-
-        if (move < 0 || move >= Board.BOARD_WIDTH * Board.BOARD_WIDTH) {
-            System.out.println("\nInvalid move.");
-            System.out.println("\nThe index of the move must be between 0 and "
-                    + (Board.BOARD_WIDTH * Board.BOARD_WIDTH - 1) + ", inclusive.");
-        } else if (!board.move(move)) {
-            System.out.println("\nInvalid move.");
-            System.out.println("\nThe selected index must be blank.");
+        while (true) {
+            try {
+                System.out.print("Index of x : ");
+                int x = scanner.nextInt();
+                if (x < 0 || x > Board.SIZE) {
+                    System.out.println("\nInvalid num.");
+                    continue;
+                }
+                System.out.print("Index of y : ");
+                int y = scanner.nextInt();
+                if (y < 0 || y > Board.SIZE) {
+                    System.out.println("\nInvalid num.");
+                    continue;
+                }
+                int num = x * Board.SIZE + y;
+                if (num < 0 || num >= Board.SIZE * Board.SIZE) {
+                    System.out.println("\nInvalid num.");
+                } else if (!board.move(num)) {
+                    System.out.println("\nInvalid num.");
+                    System.out.println("The selected index must be blank.");
+                }
+                int[] result = new int[2];
+                result[0] = x;
+                result[1] = y;
+                return result;
+            } catch (Exception ignored) {
+            }
         }
+
     }
 
-    /**
-     * Print out the winner of the game.
-     */
     private void printWinner() {
         Board.State winner = board.getWinner();
 
         System.out.println("\n" + board + "\n");
 
         if (winner == Board.State.Blank) {
-            System.out.println("The TicTacToe is a Draw.");
+            System.out.println("Game is Draw.");
         } else {
-            System.out.println("Player " + winner.toString() + " wins!");
-        }
-    }
-
-    /**
-     * Reset the game if the player wants to play again.
-     *
-     * @return true if the player wants to play again
-     */
-    private boolean tryAgain() {
-        if (promptTryAgain()) {
-            board.reset();
-            System.out.println("Started new game.");
-            System.out.println("X's turn.");
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Ask the player if they want to play again.
-     *
-     * @return true if the player wants to play again
-     */
-    private boolean promptTryAgain() {
-        while (true) {
-            System.out.print("Would you like to start a new game? (Y/N): ");
-            String response = sc.next();
-            if (response.equalsIgnoreCase("y")) {
-                return true;
-            } else if (response.equalsIgnoreCase("n")) {
-                return false;
-            }
-            System.out.println("Invalid input.");
+            System.out.println("Player " + winner.name() + " wins!");
         }
     }
 
