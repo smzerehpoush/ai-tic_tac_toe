@@ -1,144 +1,171 @@
 import java.util.HashSet;
-import java.util.Set;
 
 public class Board {
 
-    static final int SIZE = 3;
+    static final int BOARD_SIZE = 3;
+
     private State[][] board;
-    private State whichPlayer;
+    private State currentPlayer;
     private State winner;
-    private Set<Integer> movesAvailable;
+    private HashSet<Integer> movesAvailable;
+
     private int moveCount;
-    private boolean isGameOver;
+    private boolean gameOver;
 
     Board() {
-        board = new State[SIZE][SIZE];
+        board = new State[BOARD_SIZE][BOARD_SIZE];
         movesAvailable = new HashSet<>();
         reset();
     }
 
-    void setState(int x, int y, State state) {
-        board[x][y] = state;
 
-    }
-
-    //    sat all entities to their default value
-    void reset() {
+    private void reset() {
         moveCount = 0;
-        isGameOver = false;
-        whichPlayer = State.X;
+        gameOver = false;
+        currentPlayer = State.X;
         winner = State.Blank;
-        // set all of board states to blank
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
                 board[row][col] = State.Blank;
             }
         }
 
         movesAvailable = new HashSet<>();
 
-        for (int i = 0; i < SIZE * SIZE; i++) {
+        for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             movesAvailable.add(i);
         }
     }
 
-    //  convert state num to 2d point  7->(2,1)
     boolean move(int index) {
-        return move(index / SIZE, index % SIZE);
-    }
 
-    private boolean move(int x, int y) {
-
-        if (isGameOver) {
-            throw new IllegalStateException("Game is over.");
+        if (gameOver) {
+            throw new IllegalStateException("Game is over. No moves can be played.");
         }
+        int x = index % BOARD_SIZE;
+        int y = index / BOARD_SIZE;
 
-        if (board[x][y] != State.Blank) {
+        if (board[y][x] == State.Blank) {
+            board[y][x] = currentPlayer;
+        } else {
             return false;
         }
 
-        board[x][y] = whichPlayer;
         moveCount++;
-        movesAvailable.remove(x * SIZE + y);
+        movesAvailable.remove(index);
 
         // The game is a draw.
-        if (moveCount == SIZE * SIZE) {
+        if (moveCount == BOARD_SIZE * BOARD_SIZE) {
             winner = State.Blank;
-            isGameOver = true;
+            gameOver = true;
         }
 
-        // Check for a winner.
-        State result = checkWinner(board, SIZE);
-        if (winner != (State.Blank)) {
-            isGameOver = true;
-            winner = result;
-        }
-        whichPlayer = (whichPlayer == State.X) ? State.O : State.X;
+        checkForWinner(x, y);
+
+        currentPlayer = (currentPlayer == State.X) ? State.O : State.X;
         return true;
     }
 
     boolean isGameOver() {
-        return isGameOver;
+        return gameOver;
     }
 
-    State getPlayer() {
-        return whichPlayer;
+    State getCurrentPlayer() {
+        return currentPlayer;
     }
 
     State getWinner() {
-        if (!isGameOver) {
+        if (!gameOver) {
             throw new IllegalStateException("Game is not over yet.");
         }
         return winner;
     }
 
-    Set<Integer> getAvailableMoves() {
+    HashSet<Integer> getAvailableMoves() {
         return movesAvailable;
     }
 
-    private State checkWinner(State[][] board, int boardSize) {
-        try {
-            if (board[0][0] != State.Blank && board[0][0] == board[1][1] && board[2][2] == board[1][1])
-                return whichPlayer;
-            if (board[2][0] != State.Blank && board[2][0] == board[1][1] && board[1][1] == board[0][2])
-                return whichPlayer;
-            for (int i = 0; i < boardSize; i++) {
-                if (board[i][0] != State.Blank && board[i][0] == board[i][1] && board[i][1] == board[i][2])
-                    return whichPlayer;
-            }
-            for (int i = 0; i < boardSize; i++) {
-                if (board[0][i] != State.Blank && board[0][i] == board[1][i] && board[1][i] == board[2][i])
-                    return whichPlayer;
-            }
+    private void checkForWinner(int x, int y) {
+        checkRow(y);
+        checkColumn(x);
+        checkDiagonalFromTopLeft(x, y);
+        checkDiagonalFromTopRight(x, y);
+    }
 
-            return State.Blank;
-
-        } catch (Exception ex) {
-            throw new IllegalArgumentException("index is not valid.");
+    private void checkRow(int row) {
+        for (int i = 1; i < BOARD_SIZE; i++) {
+            if (board[row][i] != board[row][i - 1]) {
+                break;
+            }
+            if (i == BOARD_SIZE - 1) {
+                winner = currentPlayer;
+                gameOver = true;
+            }
         }
     }
 
-    Board deepClone() {
-        Board b = new Board();
+    private void checkColumn(int column) {
+        for (int i = 1; i < BOARD_SIZE; i++) {
+            if (board[i][column] != board[i - 1][column]) {
+                break;
+            }
+            if (i == BOARD_SIZE - 1) {
+                winner = currentPlayer;
+                gameOver = true;
+            }
+        }
+    }
 
-        for (int i = 0; i < b.board.length; i++) {
-            b.board[i] = this.board[i].clone();
+    private void checkDiagonalFromTopLeft(int x, int y) {
+        if (x == y) {
+            for (int i = 1; i < BOARD_SIZE; i++) {
+                if (board[i][i] != board[i - 1][i - 1]) {
+                    break;
+                }
+                if (i == BOARD_SIZE - 1) {
+                    winner = currentPlayer;
+                    gameOver = true;
+                }
+            }
+        }
+    }
+
+    private void checkDiagonalFromTopRight(int x, int y) {
+        if (BOARD_SIZE - 1 - x == y) {
+            for (int i = 1; i < BOARD_SIZE; i++) {
+                if (board[BOARD_SIZE - 1 - i][i] != board[BOARD_SIZE - i][i - 1]) {
+                    break;
+                }
+                if (i == BOARD_SIZE - 1) {
+                    winner = currentPlayer;
+                    gameOver = true;
+                }
+            }
+        }
+    }
+
+    Board getDeepClone() {
+        Board board = new Board();
+
+        for (int i = 0; i < board.board.length; i++) {
+            board.board[i] = this.board[i].clone();
         }
 
-        b.whichPlayer = this.whichPlayer;
-        b.winner = this.winner;
-        b.movesAvailable.addAll(this.movesAvailable);
-        b.moveCount = this.moveCount;
-        b.isGameOver = this.isGameOver;
-        return b;
+        board.currentPlayer = this.currentPlayer;
+        board.winner = this.winner;
+        board.movesAvailable = new HashSet<>();
+        board.movesAvailable.addAll(this.movesAvailable);
+        board.moveCount = this.moveCount;
+        board.gameOver = this.gameOver;
+        return board;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        for (int y = 0; y < SIZE; y++) {
-            for (int x = 0; x < SIZE; x++) {
+        for (int y = 0; y < BOARD_SIZE; y++) {
+            for (int x = 0; x < BOARD_SIZE; x++) {
 
                 if (board[y][x] == State.Blank) {
                     sb.append("-");
@@ -148,13 +175,12 @@ public class Board {
                 sb.append(" ");
 
             }
-            if (y != SIZE - 1) {
+            if (y != BOARD_SIZE - 1) {
                 sb.append("\n");
             }
         }
 
         return new String(sb);
     }
-
 
 }

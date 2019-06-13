@@ -3,74 +3,63 @@ import java.util.Scanner;
 public class Console {
 
     private Board board;
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
 
     private Console() {
         board = new Board();
     }
 
-    public static void main(String[] args) {
-        Console ticTacToe = new Console();
-        ticTacToe.play();
-    }
-
     private void play() {
 
         System.out.println("Starting a new game.");
+
         while (true) {
             printGameStatus();
-            playGame();
+            playMove();
 
             if (board.isGameOver()) {
                 printWinner();
                 break;
             }
         }
-
     }
 
-    private void playGame() {
-        if (board.getPlayer() == State.X) {
-            takeInputFromUser();
+    private void playMove() {
+        if (board.getCurrentPlayer() == State.X) {
+            getPlayerMove();
         } else {
-            Algorithms.miniMax(board);
+            MiniMax.run(board);
         }
     }
 
     private void printGameStatus() {
         System.out.println("\n" + board + "\n");
-        System.out.println(board.getPlayer().name() + "'s turn.");
+        System.out.println(board.getCurrentPlayer().name() + "'s turn.");
     }
 
-    private void takeInputFromUser() {
+    private void getPlayerMove() {
 
+        int move;
         while (true) {
             try {
-                System.out.print("Index of x : ");
-                int x = scanner.nextInt();
-                if (x < 0 || x > Board.SIZE) {
-                    System.out.println("\nInvalid num.");
-                    continue;
-                }
-                System.out.print("Index of y : ");
-                int y = scanner.nextInt();
-                if (y < 0 || y > Board.SIZE) {
-                    System.out.println("\nInvalid num.");
-                    continue;
-                }
-                int num = x * Board.SIZE + y;
-                if (num < 0 || num >= Board.SIZE * Board.SIZE) {
-                    System.out.println("\nInvalid num.");
-                } else if (board.move(num))
-                    break;
-                else {
-                    System.out.println("\nInvalid num.");
-                    System.out.println("The selected index must be blank.");
-                }
-            } catch (Exception ignored) {
+                System.out.print("Index of move: ");
+                scanner = new Scanner(System.in);
+                move = scanner.nextInt();
+                break;
+            } catch (Exception ex) {
+                System.out.println("\nInvalid move.");
+                scanner.next();
             }
         }
 
+        if (move < 0 || move >= Board.BOARD_SIZE * Board.BOARD_SIZE) {
+            System.out.println("\nInvalid move.");
+            System.out.println("\nThe index of the move must be between 0 and "
+                    + (Board.BOARD_SIZE * Board.BOARD_SIZE - 1) + ", inclusive.");
+        } else if (!board.move(move)) {
+            System.out.println("\nInvalid move.");
+            System.out.println("\nThe selected index must be blank.");
+        }
     }
 
     private void printWinner() {
@@ -79,10 +68,17 @@ public class Console {
         System.out.println("\n" + board + "\n");
 
         if (winner == State.Blank) {
-            System.out.println("Game is Draw.");
+            System.out.println("No Winner!");
         } else {
-            System.out.println("Player " + winner.name() + " wins!");
+            String message = null;
+            message = (winner == State.X) ? "You Win!" : "You Loose!";
+            System.out.println(message);
         }
+    }
+
+    public static void main(String[] args) {
+        Console game = new Console();
+        game.play();
     }
 
 }

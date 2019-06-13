@@ -1,135 +1,74 @@
-/**
- * Uses the MiniMax algorithm to play a move in a game of Tic Tac Toe.
- */
 class MiniMax {
 
-    private static double maxPly;
+    static int i = 0;
 
-    /**
-     * MiniMax cannot be instantiated.
-     */
     private MiniMax() {
     }
 
-    /**
-     * Execute the algorithm.
-     *
-     * @param player the player that the AI will identify as
-     * @param board  the Tic Tac Toe board to play on
-     * @param maxPly the maximum depth
-     */
-    static void run(State player, Board board, double maxPly) {
-        if (maxPly < 1) {
-            throw new IllegalArgumentException("Maximum depth must be greater than 0.");
-        }
+    static void run(Board board) {
+        miniMax(board.getCurrentPlayer(), board);
+        System.out.println("best answer from " + i + " results!");
 
-        MiniMax.maxPly = maxPly;
-        miniMax(player, board, 0);
     }
 
-    /**
-     * The meat of the algorithm.
-     *
-     * @param player     the player that the AI will identify as
-     * @param board      the Tic Tac Toe board to play on
-     * @param currentPly the current depth
-     * @return the score of the board
-     */
-    private static int miniMax(State player, Board board, int currentPly) {
-        if (currentPly++ == maxPly || board.isGameOver()) {
-            return score(player, board);
+    private static int miniMax(State player, Board board) {
+        if (board.isGameOver()) {
+            return computeScore(player, board);
         }
 
-        if (board.getPlayer() == player) {
-            return getMax(player, board, currentPly);
+        if (board.getCurrentPlayer() == player) {
+            return computeBestScore(player, board, false);
         } else {
-            return getMin(player, board, currentPly);
+            return computeBestScore(player, board, true);
         }
 
     }
 
-    /**
-     * Play the move with the highest score.
-     *
-     * @param player     the player that the AI will identify as
-     * @param board      the Tic Tac Toe board to play on
-     * @param currentPly the current depth
-     * @return the score of the board
-     */
-    private static int getMax(State player, Board board, int currentPly) {
-        double bestScore = Double.NEGATIVE_INFINITY;
+    private static int computeBestScore(final State player, final Board board, final boolean isMin) {
+        double bestScore;
+        if (isMin)
+            bestScore = Double.POSITIVE_INFINITY;
+        else
+            bestScore = Double.NEGATIVE_INFINITY;
         int indexOfBestMove = -1;
 
-        for (Integer theMove : board.getAvailableMoves()) {
+        for (Integer move : board.getAvailableMoves()) {
+            i++;
+            Board modifiedBoard = board.getDeepClone();
+            modifiedBoard.move(move);
+            int score = miniMax(player, modifiedBoard);
+            if (isMin) {
 
-            Board modifiedBoard = board.deepClone();
-            modifiedBoard.move(theMove);
+                if (score <= bestScore) {
+                    bestScore = score;
+                    indexOfBestMove = move;
+                }
 
-            int score = miniMax(player, modifiedBoard, currentPly);
+            } else {
 
-            if (score >= bestScore) {
-                bestScore = score;
-                indexOfBestMove = theMove;
+                if (score >= bestScore) {
+                    bestScore = score;
+                    indexOfBestMove = move;
+                }
             }
 
         }
-
         board.move(indexOfBestMove);
         return (int) bestScore;
     }
 
-    /**
-     * Play the move with the lowest score.
-     *
-     * @param player     the player that the AI will identify as
-     * @param board      the Tic Tac Toe board to play on
-     * @param currentPly the current depth
-     * @return the score of the board
-     */
-    private static int getMin(State player, Board board, int currentPly) {
-        double bestScore = Double.POSITIVE_INFINITY;
-        int indexOfBestMove = -1;
 
-        for (Integer theMove : board.getAvailableMoves()) {
-
-            Board modifiedBoard = board.deepClone();
-            modifiedBoard.move(theMove);
-
-            int score = miniMax(player, modifiedBoard, currentPly);
-
-            if (score <= bestScore) {
-                bestScore = score;
-                indexOfBestMove = theMove;
-            }
-
-        }
-
-        board.move(indexOfBestMove);
-        return (int) bestScore;
-    }
-
-    /**
-     * Get the score of the board.
-     *
-     * @param player the play that the AI will identify as
-     * @param board  the Tic Tac Toe board to play on
-     * @return the score of the board
-     */
-    private static int score(State player, Board board) {
+    private static int computeScore(State player, Board board) {
         if (player == State.Blank) {
             throw new IllegalArgumentException("Player must be X or O.");
         }
 
         State opponent = (player == State.X) ? State.O : State.X;
 
-        if (board.isGameOver() && board.getWinner() == player) {
+        if (board.getWinner() == player)
             return 10;
-        } else if (board.isGameOver() && board.getWinner() == opponent) {
+        else if (board.getWinner() == opponent)
             return -10;
-        } else {
-            return 0;
-        }
+        return 0;
     }
-
-
 }
