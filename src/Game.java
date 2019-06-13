@@ -153,15 +153,4 @@ public class Game {
         return new int[0];
     }
 
-    public static void main(String[] args) throws Exception {
-        final int size = 3;
-        final int[][] board = new int[size][size];
-        final int player = 1;
-        //1 : AI, -1 : Human
-        Game game = new Game(size, player);
-        int winner = game.simulate(board, 1);
-        System.out.println("winner is " + (winner == 1 ? "AI" : "Human"));
-
-    }
-
 }

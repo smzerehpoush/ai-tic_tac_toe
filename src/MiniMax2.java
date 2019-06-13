@@ -1,60 +1,38 @@
 /**
- * Uses the MiniMax algorithm to play a move in a game of Tic Tac Toe.
+ * Uses the MiniMax2 algorithm to play a move in a game of Tic Tac Toe.
  */
-class MiniMax {
+class MiniMax2 {
 
-    private static double maxPly;
+    private static double MAX_DEPTH;
 
-    /**
-     * MiniMax cannot be instantiated.
-     */
-    private MiniMax() {
+    private MiniMax2() {
     }
 
-    /**
-     * Execute the algorithm.
-     *
-     * @param player the player that the AI will identify as
-     * @param board  the Tic Tac Toe board to play on
-     * @param maxPly the maximum depth
-     */
-    static void run(State player, Board board, double maxPly) {
-        if (maxPly < 1) {
-            throw new IllegalArgumentException("Maximum depth must be greater than 0.");
-        }
-
-        MiniMax.maxPly = maxPly;
+    static void run(State player, Board board, double maxDepth) {
+        MiniMax2.MAX_DEPTH = maxDepth;
         miniMax(player, board, 0);
     }
 
-    /**
-     * The meat of the algorithm.
-     *
-     * @param player     the player that the AI will identify as
-     * @param board      the Tic Tac Toe board to play on
-     * @param currentPly the current depth
-     * @return the score of the board
-     */
-    private static int miniMax(State player, Board board, int currentPly) {
-        if (currentPly++ == maxPly || board.isGameOver()) {
-            return score(player, board);
+    private static int miniMax(State player, Board board, int currentDepth) {
+        if (currentDepth++ == MAX_DEPTH || board.isGameOver()) {
+            return computeScore(player, board);
         }
 
         if (board.getPlayer() == player) {
-            return getMax(player, board, currentPly);
+            return getMax(player, board, currentDepth);
         } else {
-            return getMin(player, board, currentPly);
+            return getMin(player, board, currentDepth);
         }
 
     }
 
     /**
-     * Play the move with the highest score.
+     * Play the move with the highest computeScore.
      *
      * @param player     the player that the AI will identify as
      * @param board      the Tic Tac Toe board to play on
      * @param currentPly the current depth
-     * @return the score of the board
+     * @return the computeScore of the board
      */
     private static int getMax(State player, Board board, int currentPly) {
         double bestScore = Double.NEGATIVE_INFINITY;
@@ -79,12 +57,12 @@ class MiniMax {
     }
 
     /**
-     * Play the move with the lowest score.
+     * Play the move with the lowest computeScore.
      *
      * @param player     the player that the AI will identify as
      * @param board      the Tic Tac Toe board to play on
      * @param currentPly the current depth
-     * @return the score of the board
+     * @return the computeScore of the board
      */
     private static int getMin(State player, Board board, int currentPly) {
         double bestScore = Double.POSITIVE_INFINITY;
@@ -108,14 +86,7 @@ class MiniMax {
         return (int) bestScore;
     }
 
-    /**
-     * Get the score of the board.
-     *
-     * @param player the play that the AI will identify as
-     * @param board  the Tic Tac Toe board to play on
-     * @return the score of the board
-     */
-    private static int score(State player, Board board) {
+    private static int computeScore(State player, Board board) {
         if (player == State.Blank) {
             throw new IllegalArgumentException("Player must be X or O.");
         }

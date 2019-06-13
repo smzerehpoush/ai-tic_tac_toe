@@ -11,7 +11,7 @@ public class Algorithms {
 
 
     /**
-     * Play using the MiniMax Algorithm.
+     * Play using the MiniMax2 Algorithm.
      *
      * @param board the Tic Tac Toe board to play on
      */
@@ -20,7 +20,7 @@ public class Algorithms {
     }
 
     /**
-     * Play using the MiniMax algorithm. Include a depth limit.
+     * Play using the MiniMax2 algorithm. Include a depth limit.
      *
      * @param board the Tic Tac Toe board to play on
      * @param ply   the maximum depth

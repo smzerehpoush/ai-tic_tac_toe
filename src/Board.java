@@ -99,16 +99,16 @@ public class Board {
     private State checkWinner(State[][] board, int boardSize) {
         try {
             if (board[0][0] != State.Blank && board[0][0] == board[1][1] && board[2][2] == board[1][1])
-                return board[1][1];
+                return whichPlayer;
             if (board[2][0] != State.Blank && board[2][0] == board[1][1] && board[1][1] == board[0][2])
-                return board[1][1];
+                return whichPlayer;
             for (int i = 0; i < boardSize; i++) {
                 if (board[i][0] != State.Blank && board[i][0] == board[i][1] && board[i][1] == board[i][2])
-                    return board[i][0];
+                    return whichPlayer;
             }
             for (int i = 0; i < boardSize; i++) {
                 if (board[0][i] != State.Blank && board[0][i] == board[1][i] && board[1][i] == board[2][i])
-                    return board[0][i];
+                    return whichPlayer;
             }
 
             return State.Blank;
@@ -156,6 +156,5 @@ public class Board {
         return new String(sb);
     }
 
-    public enum State {Blank, X, O}
 
 }

@@ -30,11 +30,10 @@ public class Console {
     }
 
     private void playGame() {
-        if (board.getPlayer() == Board.State.X) {
-            int[] point = takeInputFromUser();
-            board.setState(point[0], point[1], Board.State.X);
+        if (board.getPlayer() == State.X) {
+            takeInputFromUser();
         } else {
-            Algorithms.miniMax(board, 10);
+            Algorithms.miniMax(board);
         }
     }
 
@@ -43,7 +42,7 @@ public class Console {
         System.out.println(board.getPlayer().name() + "'s turn.");
     }
 
-    private int[] takeInputFromUser() {
+    private void takeInputFromUser() {
 
         while (true) {
             try {
@@ -62,14 +61,12 @@ public class Console {
                 int num = x * Board.SIZE + y;
                 if (num < 0 || num >= Board.SIZE * Board.SIZE) {
                     System.out.println("\nInvalid num.");
-                } else if (!board.move(num)) {
+                } else if (board.move(num))
+                    break;
+                else {
                     System.out.println("\nInvalid num.");
                     System.out.println("The selected index must be blank.");
                 }
-                int[] result = new int[2];
-                result[0] = x;
-                result[1] = y;
-                return result;
             } catch (Exception ignored) {
             }
         }
@@ -77,11 +74,11 @@ public class Console {
     }
 
     private void printWinner() {
-        Board.State winner = board.getWinner();
+        State winner = board.getWinner();
 
         System.out.println("\n" + board + "\n");
 
-        if (winner == Board.State.Blank) {
+        if (winner == State.Blank) {
             System.out.println("Game is Draw.");
         } else {
             System.out.println("Player " + winner.name() + " wins!");
