@@ -1,11 +1,11 @@
 import java.util.Scanner;
 
-public class Console {
+public class Game {
 
     private Board board;
     private Scanner scanner;
 
-    private Console() {
+    private Game() {
         board = new Board();
     }
 
@@ -77,7 +77,7 @@ public class Console {
     }
 
     public static void main(String[] args) {
-        Console game = new Console();
+        Game game = new Game();
         game.play();
     }
 

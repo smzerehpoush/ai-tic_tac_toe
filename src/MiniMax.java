@@ -1,17 +1,19 @@
 class MiniMax {
 
-    static int i = 0;
+    static int counter;
+    //counter for number of answers...
 
     private MiniMax() {
     }
 
     static void run(Board board) {
+        counter = 0;
         miniMax(board.getCurrentPlayer(), board);
-        System.out.println("best answer from " + i + " results!");
+        System.out.println("best answer from " + counter + " results!");
 
     }
 
-    private static int miniMax(State player, Board board) {
+    private static int miniMax(final State player, final Board board) {
         if (board.isGameOver()) {
             return computeScore(player, board);
         }
@@ -33,7 +35,7 @@ class MiniMax {
         int indexOfBestMove = -1;
 
         for (Integer move : board.getAvailableMoves()) {
-            i++;
+            counter++;
             Board modifiedBoard = board.getDeepClone();
             modifiedBoard.move(move);
             int score = miniMax(player, modifiedBoard);

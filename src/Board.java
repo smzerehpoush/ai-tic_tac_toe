@@ -1,58 +1,57 @@
 import java.util.HashSet;
 
 public class Board {
-
     static final int BOARD_SIZE = 3;
 
     private State[][] board;
     private State currentPlayer;
     private State winner;
-    private HashSet<Integer> movesAvailable;
+    private HashSet<Integer> availableStates;
 
     private int moveCount;
     private boolean gameOver;
 
     Board() {
         board = new State[BOARD_SIZE][BOARD_SIZE];
-        movesAvailable = new HashSet<>();
-        reset();
-    }
-
-
-    private void reset() {
+        availableStates = new HashSet<>();
         moveCount = 0;
         gameOver = false;
         currentPlayer = State.X;
         winner = State.Blank;
-        for (int row = 0; row < BOARD_SIZE; row++) {
-            for (int col = 0; col < BOARD_SIZE; col++) {
-                board[row][col] = State.Blank;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                board[i][j] = State.Blank;
             }
         }
 
-        movesAvailable = new HashSet<>();
+        availableStates = new HashSet<>();
 
         for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
-            movesAvailable.add(i);
+            availableStates.add(i);
         }
     }
 
+
     boolean move(int index) {
 
-        if (gameOver) {
-            throw new IllegalStateException("Game is over. No moves can be played.");
+        if (gameOver || moveCount > BOARD_SIZE * BOARD_SIZE) {
+            throw new IllegalStateException("State is over. No moves can be played.");
         }
+//         x
+//        y01
+//         10
         int x = index % BOARD_SIZE;
         int y = index / BOARD_SIZE;
 
         if (board[y][x] == State.Blank) {
             board[y][x] = currentPlayer;
         } else {
+//            to say user state must be blank
             return false;
         }
 
         moveCount++;
-        movesAvailable.remove(index);
+        availableStates.remove(index);
 
         // The game is a draw.
         if (moveCount == BOARD_SIZE * BOARD_SIZE) {
@@ -76,13 +75,13 @@ public class Board {
 
     State getWinner() {
         if (!gameOver) {
-            throw new IllegalStateException("Game is not over yet.");
+            throw new IllegalStateException("State is not over yet.");
         }
         return winner;
     }
 
     HashSet<Integer> getAvailableMoves() {
-        return movesAvailable;
+        return availableStates;
     }
 
     private void checkForWinner(int x, int y) {
@@ -153,8 +152,8 @@ public class Board {
 
         board.currentPlayer = this.currentPlayer;
         board.winner = this.winner;
-        board.movesAvailable = new HashSet<>();
-        board.movesAvailable.addAll(this.movesAvailable);
+        board.availableStates = new HashSet<>();
+        board.availableStates.addAll(this.availableStates);
         board.moveCount = this.moveCount;
         board.gameOver = this.gameOver;
         return board;
