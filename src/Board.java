@@ -37,9 +37,7 @@ public class Board {
         if (gameOver || moveCount > BOARD_SIZE * BOARD_SIZE) {
             throw new IllegalStateException("State is over. No moves can be played.");
         }
-//         x
-//        y01
-//         10
+
         int x = index % BOARD_SIZE;
         int y = index / BOARD_SIZE;
 
@@ -75,7 +73,7 @@ public class Board {
 
     State getWinner() {
         if (!gameOver) {
-            throw new IllegalStateException("State is not over yet.");
+            throw new IllegalStateException("Game is not over yet.");
         }
         return winner;
     }
@@ -87,8 +85,8 @@ public class Board {
     private void checkForWinner(int x, int y) {
         checkRow(y);
         checkColumn(x);
-        checkDiagonalFromTopLeft(x, y);
-        checkDiagonalFromTopRight(x, y);
+        checkFirstDiagonal(x, y);
+        checkSecondDiagonal(x, y);
     }
 
     private void checkRow(int row) {
@@ -115,31 +113,29 @@ public class Board {
         }
     }
 
-    private void checkDiagonalFromTopLeft(int x, int y) {
+
+    private void checkFirstDiagonal(int x, int y) {
         if (x == y) {
             for (int i = 1; i < BOARD_SIZE; i++) {
                 if (board[i][i] != board[i - 1][i - 1]) {
-                    break;
-                }
-                if (i == BOARD_SIZE - 1) {
-                    winner = currentPlayer;
-                    gameOver = true;
+                    return;
                 }
             }
+            winner = currentPlayer;
+            gameOver = true;
         }
     }
 
-    private void checkDiagonalFromTopRight(int x, int y) {
+
+    private void checkSecondDiagonal(int x, int y) {
         if (BOARD_SIZE - 1 - x == y) {
             for (int i = 1; i < BOARD_SIZE; i++) {
                 if (board[BOARD_SIZE - 1 - i][i] != board[BOARD_SIZE - i][i - 1]) {
-                    break;
-                }
-                if (i == BOARD_SIZE - 1) {
-                    winner = currentPlayer;
-                    gameOver = true;
+                    return;
                 }
             }
+            winner = currentPlayer;
+            gameOver = true;
         }
     }
 
@@ -180,6 +176,25 @@ public class Board {
         }
 
         return new String(sb);
+    }
+
+    public void printGameInput() {
+        for (int y = 0; y < BOARD_SIZE; y++) {
+            for (int x = 0; x < BOARD_SIZE; x++) {
+
+                if (board[y][x] == State.Blank) {
+                    System.out.print(y * BOARD_SIZE + x);
+                } else {
+                    System.out.print("-");
+                }
+                System.out.print(" ");
+
+            }
+            if (y != BOARD_SIZE - 1) {
+                System.out.print("\n");
+            }
+        }
+        System.out.println();
     }
 
 }

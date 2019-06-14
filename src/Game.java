@@ -42,6 +42,7 @@ public class Game {
         int move;
         while (true) {
             try {
+                board.printGameInput();
                 System.out.print("Index of move: ");
                 scanner = new Scanner(System.in);
                 move = scanner.nextInt();
